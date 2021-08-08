@@ -1,6 +1,6 @@
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores'
 import { keyStores, ConnectConfig, KeyPair  } from 'near-api-js'
-import { CHAINS, NEAR_NETWORKS } from 'types/types'
+import { CHAINS, NEAR_NETWORKS } from 'types'
 // import { getDatahubNodeURL } from 'utils/datahub-utils'
 
 export const networkfromString = (network: string) : NEAR_NETWORKS => 

@@ -4,8 +4,8 @@ import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { ArrowUpRight } from 'react-feather';
 
-import { CHAINS, ChainType, StepType } from 'types/types';
-import { getChainColors } from 'utils/colors-utils';
+import { CHAINS, ChainType, StepType } from 'types';
+import { getChainColors } from 'utils/colors';
 
 const { Text } = Typography;
 

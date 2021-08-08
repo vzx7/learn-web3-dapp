@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { CHAINS_CONFIG } from "lib/constants"
-import { CHAINS, ChainType } from 'types/types'
+import { CHAINS, ChainType } from 'types'
 import { ComponentType } from 'react'
 import styled from "styled-components"
 import { LoadingOutlined } from '@ant-design/icons'
-import { getChainColors } from 'utils/colors-utils';
+import { getChainColors } from 'utils/colors';
 
 type StaticPropsT = {
   params : { chain : CHAINS }

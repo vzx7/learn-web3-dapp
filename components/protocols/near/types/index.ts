@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { ChainType } from "types/types";
+import { ChainType } from "types";
 
 // API call
 export type NearConnectResponse = string

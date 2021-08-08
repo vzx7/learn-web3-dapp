@@ -1,88 +1,69 @@
-import { useState } from "react";
-import { Row, Space, Tag, Typography } from 'antd';
-import { FundViewOutlined } from '@ant-design/icons';
-
-import Sidebar from "components/shared/Sidebar";
-import { ChainType } from "types/types";
-import Step from "components/shared/Step";
-import Connect from "./steps/1_Connect";
-import Query from "./steps/2_Query";
-import Balance from "./steps/3_Balance";
-import Deploy from "./steps/4_Deploy";
-import Call from "./steps/5_Call";
-import { PolygonAccountT, PolygonChainIdT } from 'types/polygon-types'
-import { getPolygonAddressExplorerURL } from 'utils/polygon-utils'
-
-import { useSteps } from "hooks/steps-hooks";
+import { useEffect, useReducer } from "react";
+import { Row } from 'antd';
+import { Connect} from 'components/protocols/polygon/components/steps';
+import { appStateReducer, initialState, PolygonContext } from 'components/protocols/polygon/context'
+import { useAppState, useLocalStorage } from 'components/protocols/polygon/hooks'
+import { Sidebar, Step } from 'components/protocols/polygon/components/layout'
+import { Nav } from 'components/protocols/polygon/components';
+import type { AppI } from 'components/protocols/polygon/types';
 
 // Prevents "Property 'ethereum' does not exist on type
 // 'Window & typeof globalThis' ts(2339)" linter warning
 declare let window: any;
 
-const { Paragraph } = Typography;
+const PolygontApp: React.FC<AppI> = ({ chain }) => {
+    const { state, dispatch } = useAppState();
+    const { steps } = chain
+    const step = steps[state.index];
+    const nextHandler = () => {
+        dispatch({
+            type: 'SetIndex',
+            index: state.index + 1
+        })
+    }
+    const prevHandler = () => {
+        dispatch({
+            type: 'SetIndex',
+            index: state.index - 1
+        })
+    }
+    const isFirstStep = state.index == 0;
+    const isLastStep = state.index === steps.length - 1;
 
-const Chain = ({ chain }: { chain: ChainType }) => {
-  const [account, setAccount] = useState<PolygonAccountT>(null);
-
-  const { steps } = chain
-
-  const {
-    next,
-    prev,
-    stepIndex,
-    step,
-    isFirstStep,
-    isLastStep
-  } = useSteps(steps);
-
-  return (
-    <Row>
-      <Sidebar
-        chain={chain}
-        steps={steps}
-        stepIndex={stepIndex}
-      />
-      <Step
-        chain={chain}
-        step={step}
-        isFirstStep={isFirstStep}
-        isLastStep={isLastStep}
-        prev={prev}
-        next={next}
-        body={
-          <>
-            {step.id === "connect" && <Connect account={account} setAccount={setAccount} />}
-            {step.id === "query" && <Query />}
-            {step.id === "balance" && <Balance account={account} />}
-            {step.id === "deploy" && <Deploy />}
-            {step.id === "call" && <Call />}
-          </>
-        }
-        nav={<Nav account={account} />}
-      />
-    </Row>
+    return (
+        <Row>
+        <Sidebar
+            steps={steps}
+            stepIndex={state.index}
+        />
+        <Step
+            step={step}
+            isFirstStep={isFirstStep}
+            isLastStep={isLastStep}
+            prev={prevHandler}
+            next={nextHandler}
+            body={
+            <>
+                { step.id === "connect"  && <Connect /> }
+            </>
+            }
+            nav={<Nav />}
+        />
+        </Row>
   );
 }
 
-const Nav = ({ account }: { account: PolygonAccountT }) => {
-  if (!account) return null;
-
-  const addressToDisplay = `${account.slice(0,6)}...${account.slice(-4)}`;
-
+const Polygon: React.FC<AppI> = ({ chain }) => {
+  const [storageState, setStorageState] = useLocalStorage("polygon", initialState)
+  const [state, dispatch] = useReducer(appStateReducer, storageState);
+  useEffect(() => {
+      setStorageState(state)
+  }, [state])
   return (
-    <div style={{ position: "fixed", top: 20, right: 60 }}>
-      <Paragraph copyable={{ text: account, tooltips: `Click to copy!` }}>
-        <a href={getPolygonAddressExplorerURL(account)} target="_blank" rel="noreferrer">
-          <Tag color="gold">
-            <Space>
-              <FundViewOutlined />
-              <div>View <strong>{addressToDisplay}</strong> on PolygonScan</div>
-            </Space>
-          </Tag>
-        </a>
-      </Paragraph>
-    </div>
+      <PolygonContext.Provider value={{ state, dispatch }}>
+          <PolygontApp chain={chain} />
+      </PolygonContext.Provider>
   )
 }
 
-export default Chain
+export default Polygon

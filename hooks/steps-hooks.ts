@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { StepType } from "types/types";
+import { StepType } from "types";
 
 export const useSteps = (steps: StepType[]): {
   next(): void
