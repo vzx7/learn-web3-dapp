@@ -1,3 +1,4 @@
+// Pathways with comlete set of solution
 import { Alert, Space, Typography, Popover, Button } from 'antd'
 import { useAppState } from '@near/hooks'
 import { getPrettyPublicKey } from '@near/lib'
