@@ -1,3 +1,4 @@
+// secet-solution branch marker
 import { Typography, Popover, Button } from 'antd';
 import { useAppState } from 'components/protocols/secret/hooks'
 import type { EntryT } from 'components/protocols/secret/types';
