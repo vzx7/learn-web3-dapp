@@ -11,6 +11,7 @@ export default async function connect(
         const { secret, newMessage, contract, address } = req.body;
         const url = getSafeUrl();
         const kit = newKit(url);
+        // Add your account to ContractKit to sign transactions
         kit.addAccount(secret);
 
         // Create a new contract instance with the HelloWorld contract info
@@ -20,9 +21,6 @@ export default async function connect(
             contract
         )
 
-        // Add your account to ContractKit to sign transactions
-        // This account must have a CELO balance to pay tx fees, get some https://celo.org/build/faucet
-        kit.connection.addAccount(secret);
         const txObject = await instance.methods.setName(newMessage);
         let tx = await kit.sendTransactionObject(txObject, { from: address });
 
